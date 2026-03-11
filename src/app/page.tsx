@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { 
   Phone, MessageCircle, Calendar, Clock, MapPin, Mail, 
   Instagram, Facebook, Scissors, X, ImageIcon, Check, 
-  Menu, Trash2, Plus, Settings, LogOut, ChevronRight, Save
+  Menu, Trash2, Plus, Settings, LogOut, ChevronRight, Save, Upload
 } from 'lucide-react';
 
 // ========== TIPOS ==========
@@ -121,138 +121,163 @@ export default function App() {
   if (vista === 'admin' && adminLogueado) return <Admin config={config} servicios={servicios} cortes={cortes} citas={citas} seccion={seccionAdmin} setSeccion={setSeccionAdmin} logout={logout} cargar={cargar} />;
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white">
+    <div className="min-h-screen bg-[#0c0c0c] text-white">
       {/* Navegación */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0c0c0c]/95 backdrop-blur-md border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/10">
               {config?.logoUrl ? (
-                <img src={config.logoUrl} alt="Logo" className="w-6 h-6 object-contain" />
+                <img src={config.logoUrl} alt="Logo" className="w-7 h-7 object-contain" />
               ) : (
-                <Scissors className="w-5 h-5 text-black" />
+                <Scissors className="w-6 h-6 text-black" />
               )}
             </div>
-            <span className="font-semibold text-lg">{config?.nombreNegocio || 'Barbería'}</span>
+            <div className="hidden sm:block">
+              <span className="font-bold text-lg tracking-tight">{config?.nombreNegocio || 'Barbería'}</span>
+              <p className="text-xs text-amber-500">{config?.lema || 'Estilo Premium'}</p>
+            </div>
           </div>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#servicios" className="text-neutral-400 hover:text-white transition-colors">Servicios</a>
-            <a href="#galeria" className="text-neutral-400 hover:text-white transition-colors">Galería</a>
-            <a href="#contacto" className="text-neutral-400 hover:text-white transition-colors">Contacto</a>
-            <a href="#reservar" className="px-5 py-2 bg-amber-500 text-black font-medium rounded-lg hover:bg-amber-400 transition-colors">
+            <a href="#servicios" className="text-sm text-neutral-400 hover:text-white transition-colors">Servicios</a>
+            <a href="#galeria" className="text-sm text-neutral-400 hover:text-white transition-colors">Galería</a>
+            <a href="#contacto" className="text-sm text-neutral-400 hover:text-white transition-colors">Contacto</a>
+            <a href="#reservar" className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-lg shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all hover:-translate-y-0.5">
               Reservar
             </a>
           </div>
 
           {/* Mobile Menu Button */}
-          <button onClick={() => setMenuAbierto(!menuAbierto)} className="md:hidden p-2">
+          <button onClick={() => setMenuAbierto(!menuAbierto)} className="md:hidden p-2 text-neutral-400 hover:text-white">
             <Menu className="w-6 h-6" />
           </button>
         </div>
 
         {/* Mobile Menu */}
         {menuAbierto && (
-          <div className="md:hidden bg-neutral-900 border-t border-neutral-800 px-6 py-4 space-y-3">
-            <a href="#servicios" onClick={() => setMenuAbierto(false)} className="block py-2 text-neutral-300">Servicios</a>
-            <a href="#galeria" onClick={() => setMenuAbierto(false)} className="block py-2 text-neutral-300">Galería</a>
-            <a href="#contacto" onClick={() => setMenuAbierto(false)} className="block py-2 text-neutral-300">Contacto</a>
-            <a href="#reservar" onClick={() => setMenuAbierto(false)} className="block py-3 bg-amber-500 text-black font-medium rounded-lg text-center">Reservar</a>
+          <div className="md:hidden bg-neutral-900/95 border-t border-white/5 px-6 py-4 space-y-3">
+            <a href="#servicios" onClick={() => setMenuAbierto(false)} className="block py-2 text-neutral-300 hover:text-white">Servicios</a>
+            <a href="#galeria" onClick={() => setMenuAbierto(false)} className="block py-2 text-neutral-300 hover:text-white">Galería</a>
+            <a href="#contacto" onClick={() => setMenuAbierto(false)} className="block py-2 text-neutral-300 hover:text-white">Contacto</a>
+            <a href="#reservar" onClick={() => setMenuAbierto(false)} className="block py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-lg text-center mt-4">Reservar Cita</a>
           </div>
         )}
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6">
+      <section className="pt-32 pb-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="w-20 h-20 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-8">
-            <Scissors className="w-10 h-10 text-amber-500" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-full mb-8">
+            <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+            <span className="text-sm text-amber-400">Abierto ahora</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
             {config?.nombreNegocio || 'Barbería Premium'}
           </h1>
-          <p className="text-xl text-neutral-400 mb-10 max-w-2xl mx-auto">
-            {config?.lema || 'Tu estilo, nuestra pasión'}
+          <p className="text-lg text-neutral-400 mb-10 max-w-2xl mx-auto">
+            {config?.lema || 'Donde el estilo se encuentra con la elegancia. Profesionales dedicados a realzar tu imagen.'}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#reservar" className="px-8 py-4 bg-amber-500 text-black font-semibold rounded-lg hover:bg-amber-400 transition-colors inline-flex items-center justify-center gap-2">
-              Agendar Cita <ChevronRight className="w-4 h-4" />
+            <a href="#reservar" className="group px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-lg shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all hover:-translate-y-1 inline-flex items-center justify-center gap-2">
+              Agendar Cita <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
-            <button onClick={whatsapp} className="px-8 py-4 border border-neutral-700 rounded-lg hover:bg-neutral-800 transition-colors inline-flex items-center justify-center gap-2">
-              <MessageCircle className="w-5 h-5" /> WhatsApp
+            <button onClick={whatsapp} className="px-8 py-4 border border-neutral-700 rounded-lg hover:bg-neutral-800/50 hover:border-neutral-600 transition-all inline-flex items-center justify-center gap-2">
+              <MessageCircle className="w-5 h-5 text-green-500" /> WhatsApp
             </button>
           </div>
         </div>
       </section>
 
       {/* Servicios */}
-      <section id="servicios" className="py-20 px-6 bg-neutral-900">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+      <section id="servicios" className="py-20 px-6 bg-gradient-to-b from-[#0c0c0c] via-neutral-900/50 to-[#0c0c0c]">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
             <h2 className="text-3xl font-bold mb-3">Nuestros Servicios</h2>
-            <p className="text-neutral-400">Servicios profesionales para tu cuidado personal</p>
+            <p className="text-neutral-400">Servicios profesionales de barbería con productos premium</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {servicios.filter(s => s.activo).map(servicio => (
-              <div key={servicio.id} className="bg-neutral-800/50 rounded-xl p-6 border border-neutral-700 hover:border-amber-500/50 transition-colors">
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="text-lg font-semibold">{servicio.nombre}</h3>
-                  <span className="text-amber-500 font-bold text-xl">${servicio.precio}</span>
+              <div key={servicio.id} className="group bg-neutral-900/50 rounded-2xl overflow-hidden border border-neutral-800 hover:border-amber-500/30 transition-all hover:-translate-y-1">
+                <div className="h-44 bg-neutral-800 relative overflow-hidden">
+                  {servicio.imagenUrl ? (
+                    <img src={servicio.imagenUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900">
+                      <Scissors className="w-12 h-12 text-neutral-700" />
+                    </div>
+                  )}
                 </div>
-                <p className="text-neutral-400 text-sm mb-4">{servicio.descripcion || 'Servicio profesional'}</p>
-                <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                  <Clock className="w-4 h-4" />
-                  <span>{servicio.duracion} min</span>
+                <div className="p-5">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-semibold text-lg">{servicio.nombre}</h3>
+                    <span className="text-amber-500 font-bold">${servicio.precio}</span>
+                  </div>
+                  <p className="text-neutral-400 text-sm mb-3">{servicio.descripcion || 'Servicio profesional de calidad'}</p>
+                  <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                    <Clock className="w-4 h-4" />
+                    <span>{servicio.duracion} minutos</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           {servicios.filter(s => s.activo).length === 0 && (
-            <p className="text-center text-neutral-500 py-12">No hay servicios disponibles</p>
+            <div className="text-center py-16">
+              <Scissors className="w-16 h-16 text-neutral-700 mx-auto mb-4" />
+              <p className="text-neutral-500">No hay servicios disponibles</p>
+            </div>
           )}
         </div>
       </section>
 
       {/* Galería */}
       <section id="galeria" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
             <h2 className="text-3xl font-bold mb-3">Nuestros Trabajos</h2>
-            <p className="text-neutral-400">Mira los estilos que creamos para nuestros clientes</p>
+            <p className="text-neutral-400">Mira los estilos que hemos creado para nuestros clientes</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {cortes.filter(c => c.activo).map(corte => (
-              <div key={corte.id} className="aspect-square bg-neutral-800 rounded-xl overflow-hidden relative group">
+              <div key={corte.id} className="group aspect-square bg-neutral-900 rounded-xl overflow-hidden relative border border-neutral-800 hover:border-amber-500/30 transition-all">
                 {corte.imagenUrl ? (
-                  <img src={corte.imagenUrl} className="w-full h-full object-cover" />
+                  <img src={corte.imagenUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <ImageIcon className="w-12 h-12 text-neutral-600" />
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900">
+                    <ImageIcon className="w-10 h-10 text-neutral-700" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                  <span className="font-medium">{corte.titulo}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                  <div>
+                    <span className="font-medium">{corte.titulo}</span>
+                    {corte.descripcion && <p className="text-xs text-neutral-400">{corte.descripcion}</p>}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           {cortes.filter(c => c.activo).length === 0 && (
-            <p className="text-center text-neutral-500 py-12">No hay trabajos en la galería</p>
+            <div className="text-center py-16">
+              <ImageIcon className="w-16 h-16 text-neutral-700 mx-auto mb-4" />
+              <p className="text-neutral-500">No hay trabajos en la galería</p>
+            </div>
           )}
         </div>
       </section>
 
       {/* Reservar */}
-      <section id="reservar" className="py-20 px-6 bg-neutral-900">
+      <section id="reservar" className="py-20 px-6 bg-gradient-to-b from-[#0c0c0c] via-neutral-900/50 to-[#0c0c0c]">
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-3">Agenda tu Cita</h2>
-            <p className="text-neutral-400">Completa el formulario para reservar</p>
+            <p className="text-neutral-400">Selecciona servicio, fecha y hora</p>
           </div>
           <FormCita servicios={servicios} />
         </div>
@@ -260,69 +285,83 @@ export default function App() {
 
       {/* Contacto */}
       <section id="contacto" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
             <h2 className="text-3xl font-bold mb-3">Contacto</h2>
-            <p className="text-neutral-400">Encuéntranos o contáctanos</p>
+            <p className="text-neutral-400">Estamos aquí para atenderte</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-10">
             {/* Info */}
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-6 h-6 text-amber-500" />
+            <div className="space-y-5">
+              <div className="flex items-start gap-4 p-5 bg-neutral-900/50 rounded-xl border border-neutral-800">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-amber-500" />
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Ubicación</h4>
-                  <p className="text-neutral-400">{config?.direccion || 'No configurada'}</p>
+                  <p className="text-neutral-400 text-sm">{config?.direccion || 'No configurada'}</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-6 h-6 text-amber-500" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-5 bg-neutral-900/50 rounded-xl border border-neutral-800">
+                  <Phone className="w-5 h-5 text-amber-500 mb-3" />
+                  <h4 className="font-semibold mb-1 text-sm">Teléfono</h4>
+                  <p className="text-neutral-400 text-sm">{config?.telefono || 'No configurado'}</p>
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Teléfono</h4>
-                  <p className="text-neutral-400">{config?.telefono || 'No configurado'}</p>
+                <div className="p-5 bg-neutral-900/50 rounded-xl border border-neutral-800">
+                  <Mail className="w-5 h-5 text-amber-500 mb-3" />
+                  <h4 className="font-semibold mb-1 text-sm">Email</h4>
+                  <p className="text-neutral-400 text-sm truncate">{config?.email || 'No configurado'}</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-6 h-6 text-amber-500" />
+              <div className="p-5 bg-neutral-900/50 rounded-xl border border-neutral-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <Clock className="w-5 h-5 text-amber-500" />
+                  <h4 className="font-semibold">Horario</h4>
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Horario</h4>
-                  <div className="text-neutral-400 text-sm space-y-1">
-                    <p>Lun - Vie: {config?.horarioLunes || 'Cerrado'}</p>
-                    <p>Sábado: {config?.horarioSabado || 'Cerrado'}</p>
-                    <p>Domingo: {config?.horarioDomingo || 'Cerrado'}</p>
-                  </div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                  <div className="flex justify-between"><span className="text-neutral-500">Lun - Vie</span><span>{config?.horarioLunes || 'Cerrado'}</span></div>
+                  <div className="flex justify-between"><span className="text-neutral-500">Sábado</span><span>{config?.horarioSabado || 'Cerrado'}</span></div>
+                  <div className="flex justify-between"><span className="text-neutral-500">Domingo</span><span>{config?.horarioDomingo || 'Cerrado'}</span></div>
                 </div>
               </div>
             </div>
 
             {/* Redes */}
-            <div className="bg-neutral-800/50 rounded-xl p-8 border border-neutral-700">
-              <h4 className="font-semibold mb-6 text-center">Síguenos</h4>
-              <div className="flex justify-center gap-4">
-                {config?.instagram && (
-                  <button onClick={() => window.open(config.instagram.startsWith('http') ? config.instagram : `https://instagram.com/${config.instagram}`, '_blank')} className="w-14 h-14 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center hover:scale-105 transition-transform">
-                    <Instagram className="w-6 h-6" />
-                  </button>
-                )}
-                {config?.facebook && (
-                  <button className="w-14 h-14 rounded-lg bg-blue-600 flex items-center justify-center hover:scale-105 transition-transform">
-                    <Facebook className="w-6 h-6" />
-                  </button>
-                )}
-                {config?.whatsapp && (
-                  <button onClick={whatsapp} className="w-14 h-14 rounded-lg bg-green-600 flex items-center justify-center hover:scale-105 transition-transform">
-                    <MessageCircle className="w-6 h-6" />
-                  </button>
-                )}
+            <div className="space-y-5">
+              <div className="p-6 bg-neutral-900/50 rounded-xl border border-neutral-800 text-center">
+                <h4 className="font-semibold mb-4">Síguenos</h4>
+                <div className="flex justify-center gap-3">
+                  {config?.instagram && (
+                    <button onClick={() => window.open(config.instagram.startsWith('http') ? config.instagram : `https://instagram.com/${config.instagram}`, '_blank')} className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center hover:scale-105 transition-transform">
+                      <Instagram className="w-5 h-5" />
+                    </button>
+                  )}
+                  {config?.facebook && (
+                    <button className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center hover:scale-105 transition-transform">
+                      <Facebook className="w-5 h-5" />
+                    </button>
+                  )}
+                  {config?.whatsapp && (
+                    <button onClick={whatsapp} className="w-12 h-12 rounded-xl bg-green-600 flex items-center justify-center hover:scale-105 transition-transform">
+                      <MessageCircle className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <button onClick={whatsapp} className="p-5 bg-green-600 rounded-xl font-semibold flex flex-col items-center gap-2 hover:bg-green-500 transition-colors">
+                  <MessageCircle className="w-6 h-6" />
+                  <span>WhatsApp</span>
+                </button>
+                <a href="#reservar" className="p-5 bg-gradient-to-r from-amber-500 to-amber-600 text-black rounded-xl font-semibold flex flex-col items-center gap-2 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all">
+                  <Calendar className="w-6 h-6" />
+                  <span>Reservar</span>
+                </a>
               </div>
             </div>
           </div>
@@ -330,10 +369,19 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-neutral-800 py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-neutral-500 text-sm">© {new Date().getFullYear()} {config?.nombreNegocio || 'Barbería'}</p>
-          <button onClick={() => setVista('login')} className="text-neutral-600 text-sm hover:text-neutral-400">
+      <footer className="border-t border-neutral-800 py-10 px-6">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+              <Scissors className="w-5 h-5 text-black" />
+            </div>
+            <div>
+              <span className="font-semibold">{config?.nombreNegocio || 'Barbería'}</span>
+              <p className="text-xs text-neutral-500">{config?.lema}</p>
+            </div>
+          </div>
+          <p className="text-neutral-600 text-sm">© {new Date().getFullYear()} Todos los derechos reservados</p>
+          <button onClick={() => setVista('login')} className="text-neutral-700 text-sm hover:text-amber-500 transition-colors">
             Panel Admin
           </button>
         </div>
@@ -341,7 +389,7 @@ export default function App() {
 
       {/* WhatsApp flotante */}
       {config?.whatsapp && (
-        <button onClick={whatsapp} className="fixed bottom-6 right-6 w-14 h-14 bg-green-600 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-50">
+        <button onClick={whatsapp} className="fixed bottom-6 right-6 w-14 h-14 bg-green-600 rounded-full shadow-lg shadow-green-600/30 flex items-center justify-center hover:scale-110 transition-transform z-50">
           <MessageCircle className="w-6 h-6" />
         </button>
       )}
@@ -352,7 +400,7 @@ export default function App() {
 // ========== LOADING ==========
 function LoadingScreen() {
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
+    <div className="min-h-screen bg-[#0c0c0c] flex items-center justify-center">
       <div className="w-12 h-12 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
     </div>
   );
@@ -383,35 +431,35 @@ function FormCita({ servicios }: { servicios: Servicio[] }) {
   };
 
   if (ok) return (
-    <div className="bg-neutral-800/50 rounded-xl p-8 text-center border border-neutral-700">
-      <div className="w-16 h-16 rounded-full bg-green-600/20 flex items-center justify-center mx-auto mb-4">
-        <Check className="w-8 h-8 text-green-500" />
+    <div className="bg-neutral-900/50 rounded-2xl p-10 text-center border border-neutral-800">
+      <div className="w-20 h-20 rounded-full bg-green-600/20 flex items-center justify-center mx-auto mb-6">
+        <Check className="w-10 h-10 text-green-500" />
       </div>
-      <h3 className="text-xl font-semibold mb-2">¡Cita Agendada!</h3>
-      <p className="text-neutral-400">Te esperamos</p>
+      <h3 className="text-2xl font-bold mb-2">¡Cita Agendada!</h3>
+      <p className="text-neutral-400">Te esperamos en tu fecha programada</p>
     </div>
   );
 
   return (
-    <form onSubmit={submit} className="bg-neutral-800/50 rounded-xl p-8 border border-neutral-700 space-y-5">
+    <form onSubmit={submit} className="bg-neutral-900/50 rounded-2xl p-8 border border-neutral-800 space-y-5">
       <div className="grid sm:grid-cols-2 gap-4">
-        <input required placeholder="Nombre *" value={data.clienteNombre} onChange={e => setData({...data, clienteNombre: e.target.value})} className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-        <input required placeholder="Teléfono *" value={data.clienteTelefono} onChange={e => setData({...data, clienteTelefono: e.target.value})} className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
+        <input required placeholder="Nombre completo *" value={data.clienteNombre} onChange={e => setData({...data, clienteNombre: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+        <input required placeholder="Teléfono *" value={data.clienteTelefono} onChange={e => setData({...data, clienteTelefono: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
       </div>
-      <input placeholder="Email (opcional)" value={data.clienteEmail} onChange={e => setData({...data, clienteEmail: e.target.value})} className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-      <select required value={data.servicioId} onChange={e => setData({...data, servicioId: e.target.value})} className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none">
-        <option value="">Servicio *</option>
+      <input placeholder="Email (opcional)" value={data.clienteEmail} onChange={e => setData({...data, clienteEmail: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+      <select required value={data.servicioId} onChange={e => setData({...data, servicioId: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors">
+        <option value="">Selecciona un servicio *</option>
         {servicios.filter(s => s.activo).map(s => <option key={s.id} value={s.id}>{s.nombre} - ${s.precio}</option>)}
       </select>
       <div className="grid grid-cols-2 gap-4">
-        <input type="date" required min={new Date().toISOString().split('T')[0]} value={data.fecha} onChange={e => setData({...data, fecha: e.target.value})} className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-        <select required value={data.hora} onChange={e => setData({...data, hora: e.target.value})} className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none">
+        <input type="date" required min={new Date().toISOString().split('T')[0]} value={data.fecha} onChange={e => setData({...data, fecha: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+        <select required value={data.hora} onChange={e => setData({...data, hora: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors">
           <option value="">Hora *</option>
           {horas.map(h => <option key={h} value={h} disabled={ocupadas.includes(h)}>{h}</option>)}
         </select>
       </div>
-      <textarea placeholder="Notas" value={data.notas} onChange={e => setData({...data, notas: e.target.value})} className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none resize-none" rows={3} />
-      <button disabled={loading} className="w-full py-4 bg-amber-500 text-black font-semibold rounded-lg hover:bg-amber-400 disabled:opacity-50">
+      <textarea placeholder="Notas adicionales (opcional)" value={data.notas} onChange={e => setData({...data, notas: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors resize-none" rows={3} />
+      <button disabled={loading} className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 disabled:opacity-50 transition-all">
         {loading ? 'Agendando...' : 'Confirmar Cita'}
       </button>
     </form>
@@ -439,25 +487,25 @@ function Login({ setVista, setAdminLogueado, config }: { setVista: (v: 'publica'
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#0c0c0c] flex items-center justify-center p-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-full bg-amber-500 flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-500/20">
             <Scissors className="w-8 h-8 text-black" />
           </div>
           <h1 className="text-2xl font-bold">Panel Admin</h1>
           <p className="text-neutral-500">{config?.nombreNegocio}</p>
         </div>
-        <form onSubmit={submit} className="bg-neutral-900 rounded-xl p-6 border border-neutral-800 space-y-4">
-          <input required placeholder="Usuario" value={user} onChange={e => setUser(e.target.value)} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-          <input type="password" required placeholder="Contraseña" value={pass} onChange={e => setPass(e.target.value)} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
+        <form onSubmit={submit} className="bg-neutral-900/50 rounded-2xl p-6 border border-neutral-800 space-y-4">
+          <input required placeholder="Usuario" value={user} onChange={e => setUser(e.target.value)} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+          <input type="password" required placeholder="Contraseña" value={pass} onChange={e => setPass(e.target.value)} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
           {err && <p className="text-red-400 text-sm text-center">{err}</p>}
-          <button disabled={loading} className="w-full py-3 bg-amber-500 text-black font-semibold rounded-lg hover:bg-amber-400 disabled:opacity-50">
+          <button disabled={loading} className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-amber-500/20 disabled:opacity-50 transition-all">
             {loading ? 'Verificando...' : 'Entrar'}
           </button>
         </form>
-        <button onClick={() => setVista('publica')} className="w-full mt-4 text-neutral-500 text-sm hover:text-white">
-          ← Volver
+        <button onClick={() => setVista('publica')} className="w-full mt-4 text-neutral-500 text-sm hover:text-white transition-colors">
+          ← Volver al inicio
         </button>
       </div>
     </div>
@@ -483,42 +531,40 @@ function Admin({ config, servicios, cortes, citas, seccion, setSeccion, logout, 
   ];
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex">
+    <div className="min-h-screen bg-[#0c0c0c] flex">
       {/* Sidebar */}
-      <aside className="w-60 bg-neutral-900 border-r border-neutral-800 p-4 hidden md:flex flex-col">
-        <div className="flex items-center gap-3 mb-8 px-2">
-          <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center">
+      <aside className="w-64 bg-neutral-900/50 border-r border-neutral-800 p-5 hidden md:flex flex-col">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
             <Scissors className="w-5 h-5 text-black" />
           </div>
           <div>
-            <p className="font-semibold text-sm">{config?.nombreNegocio}</p>
-            <p className="text-xs text-neutral-500">Admin</p>
+            <p className="font-semibold">{config?.nombreNegocio}</p>
+            <p className="text-xs text-neutral-500">Panel Admin</p>
           </div>
         </div>
         <nav className="flex-1 space-y-1">
           {navItems.map(item => (
-            <button key={item.id} onClick={() => setSeccion(item.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${seccion === item.id ? 'bg-amber-500/20 text-amber-500' : 'text-neutral-400 hover:text-white hover:bg-neutral-800'}`}>
+            <button key={item.id} onClick={() => setSeccion(item.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${seccion === item.id ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'}`}>
               <item.icon className="w-5 h-5" />
               {item.label}
             </button>
           ))}
         </nav>
-        <button onClick={logout} className="flex items-center gap-3 px-4 py-3 text-neutral-500 hover:text-red-400 rounded-lg">
+        <button onClick={logout} className="flex items-center gap-3 px-4 py-3 text-neutral-500 hover:text-red-400 rounded-xl transition-colors">
           <LogOut className="w-5 h-5" /> Cerrar sesión
         </button>
       </aside>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-neutral-900 border-b border-neutral-800 p-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-neutral-900/95 border-b border-neutral-800 p-4">
         <div className="flex items-center justify-between mb-3">
           <span className="font-semibold">{config?.nombreNegocio}</span>
-          <button onClick={logout} className="text-neutral-500 hover:text-red-400">
-            <LogOut className="w-5 h-5" />
-          </button>
+          <button onClick={logout} className="text-neutral-500 hover:text-red-400"><LogOut className="w-5 h-5" /></button>
         </div>
         <div className="flex gap-2">
           {navItems.map(item => (
-            <button key={item.id} onClick={() => setSeccion(item.id)} className={`px-4 py-2 rounded-lg text-sm ${seccion === item.id ? 'bg-amber-500 text-black' : 'bg-neutral-800 text-neutral-400'}`}>
+            <button key={item.id} onClick={() => setSeccion(item.id)} className={`px-4 py-2 rounded-lg text-sm transition-all ${seccion === item.id ? 'bg-amber-500 text-black font-medium' : 'bg-neutral-800 text-neutral-400'}`}>
               {item.label}
             </button>
           ))}
@@ -540,27 +586,35 @@ function Admin({ config, servicios, cortes, citas, seccion, setSeccion, logout, 
 function AdminCitas({ citas, cargar }: { citas: Cita[]; cargar: () => void }) {
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Citas</h2>
+      <h2 className="text-2xl font-bold mb-6">Gestión de Citas</h2>
       {citas.length === 0 ? (
-        <p className="text-neutral-500 text-center py-12">No hay citas</p>
+        <div className="text-center py-16 bg-neutral-900/50 rounded-2xl border border-neutral-800">
+          <Calendar className="w-16 h-16 text-neutral-700 mx-auto mb-4" />
+          <p className="text-neutral-500">No hay citas registradas</p>
+        </div>
       ) : (
         <div className="space-y-3">
           {citas.map(c => (
-            <div key={c.id} className="bg-neutral-900 rounded-xl p-4 border border-neutral-800">
+            <div key={c.id} className="bg-neutral-900/50 rounded-xl p-5 border border-neutral-800 hover:border-neutral-700 transition-colors">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <p className="font-semibold">{c.clienteNombre}</p>
-                  <p className="text-sm text-neutral-400">{c.servicio?.nombre} • {c.fecha} {c.hora}</p>
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="font-semibold">{c.clienteNombre}</span>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${c.estado === 'confirmada' ? 'bg-green-600/20 text-green-500' : c.estado === 'cancelada' ? 'bg-red-600/20 text-red-500' : 'bg-amber-600/20 text-amber-500'}`}>
+                      {c.estado}
+                    </span>
+                  </div>
+                  <p className="text-sm text-neutral-400">{c.servicio?.nombre} • {c.fecha} a las {c.hora}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`px-3 py-1 rounded-full text-xs ${c.estado === 'confirmada' ? 'bg-green-600/20 text-green-500' : c.estado === 'cancelada' ? 'bg-red-600/20 text-red-500' : 'bg-amber-600/20 text-amber-500'}`}>
-                    {c.estado}
-                  </span>
-                  <select value={c.estado} onChange={async (e) => { await fetch(`/api/citas/${c.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado: e.target.value }) }); cargar(); }} className="px-3 py-1.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm">
+                  <select value={c.estado} onChange={async (e) => { await fetch(`/api/citas/${c.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado: e.target.value }) }); cargar(); }} className="px-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-sm outline-none">
                     <option value="pendiente">Pendiente</option>
                     <option value="confirmada">Confirmada</option>
                     <option value="cancelada">Cancelada</option>
                   </select>
+                  <button onClick={async () => { if(confirm('¿Eliminar?')) { await fetch(`/api/citas/${c.id}`, { method: 'DELETE' }); cargar(); }}} className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -583,6 +637,15 @@ function AdminServicios({ servicios, cargar }: { servicios: Servicio[]; cargar: 
     setModal(true);
   };
 
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setData({...data, imagenUrl: reader.result as string});
+      reader.readAsDataURL(file);
+    }
+  };
+
   const guardar = async () => {
     await fetch(edit ? `/api/servicios/${edit.id}` : '/api/servicios', { method: edit ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...data, precio: Number(data.precio), duracion: Number(data.duracion) }) });
     setModal(false); cargar();
@@ -592,44 +655,63 @@ function AdminServicios({ servicios, cargar }: { servicios: Servicio[]; cargar: 
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Servicios</h2>
-        <button onClick={() => abrir()} className="px-4 py-2 bg-amber-500 text-black font-medium rounded-lg hover:bg-amber-400 flex items-center gap-2">
-          <Plus className="w-4 h-4" /> Nuevo
+        <button onClick={() => abrir()} className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-medium rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 flex items-center gap-2 transition-all">
+          <Plus className="w-4 h-4" /> Nuevo Servicio
         </button>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {servicios.map(s => (
-          <div key={s.id} className={`bg-neutral-900 rounded-xl p-4 border ${s.activo ? 'border-neutral-800' : 'border-neutral-800 opacity-50'}`}>
-            <div className="flex justify-between mb-2">
-              <span className="font-semibold">{s.nombre}</span>
-              <span className="text-amber-500 font-bold">${s.precio}</span>
+          <div key={s.id} className={`bg-neutral-900/50 rounded-xl overflow-hidden border ${s.activo ? 'border-neutral-800 hover:border-neutral-700' : 'border-neutral-800 opacity-50'} transition-all`}>
+            <div className="h-36 bg-neutral-800 relative">
+              {s.imagenUrl ? <img src={s.imagenUrl} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><Scissors className="w-10 h-10 text-neutral-700" /></div>}
+              {!s.activo && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><span className="text-xs text-neutral-400">Inactivo</span></div>}
             </div>
-            <p className="text-xs text-neutral-500 mb-3">{s.duracion} min</p>
-            <div className="flex gap-2">
-              <button onClick={() => abrir(s)} className="flex-1 py-1.5 bg-neutral-800 rounded text-sm hover:bg-neutral-700">Editar</button>
-              <button onClick={async () => { await fetch(`/api/servicios/${s.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ activo: !s.activo }) }); cargar(); }} className={`px-3 py-1.5 rounded text-sm ${s.activo ? 'bg-green-600/20 text-green-500' : 'bg-red-600/20 text-red-500'}`}>
-                {s.activo ? 'On' : 'Off'}
-              </button>
+            <div className="p-4">
+              <div className="flex justify-between mb-1">
+                <span className="font-semibold">{s.nombre}</span>
+                <span className="text-amber-500 font-bold">${s.precio}</span>
+              </div>
+              <p className="text-xs text-neutral-500 mb-3">{s.duracion} minutos</p>
+              <div className="flex gap-2">
+                <button onClick={() => abrir(s)} className="flex-1 py-2 bg-neutral-800 rounded-lg text-sm hover:bg-neutral-700 transition-colors">Editar</button>
+                <button onClick={async () => { await fetch(`/api/servicios/${s.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ activo: !s.activo }) }); cargar(); }} className={`px-3 py-2 rounded-lg text-sm transition-colors ${s.activo ? 'bg-green-600/20 text-green-500' : 'bg-red-600/20 text-red-500'}`}>
+                  {s.activo ? 'On' : 'Off'}
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
       {modal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6">
-          <div className="w-full max-w-md bg-neutral-900 rounded-xl p-6 border border-neutral-800">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+          <div className="w-full max-w-md bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold">{edit ? 'Editar' : 'Nuevo'} Servicio</h3>
               <button onClick={() => setModal(false)} className="text-neutral-500 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4">
-              <input placeholder="Nombre *" value={data.nombre} onChange={e => setData({...data, nombre: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-              <div className="grid grid-cols-2 gap-3">
-                <input placeholder="Precio *" value={data.precio} onChange={e => setData({...data, precio: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-                <input placeholder="Duración (min) *" value={data.duracion} onChange={e => setData({...data, duracion: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
+              {/* Upload de imagen */}
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+                  {data.imagenUrl ? <img src={data.imagenUrl} className="w-full h-full object-cover" /> : <ImageIcon className="w-8 h-8 text-neutral-600" />}
+                </div>
+                <label className="flex-1 cursor-pointer">
+                  <div className="py-4 px-5 border-2 border-dashed border-neutral-700 rounded-xl text-center hover:border-amber-500/50 transition-colors">
+                    <Upload className="w-5 h-5 mx-auto mb-2 text-neutral-500" />
+                    <span className="text-sm text-neutral-400">Subir imagen</span>
+                  </div>
+                  <input type="file" accept="image/*" onChange={handleImage} className="hidden" />
+                </label>
               </div>
-              <textarea placeholder="Descripción" value={data.descripcion} onChange={e => setData({...data, descripcion: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none resize-none" rows={2} />
-              <button onClick={guardar} className="w-full py-3 bg-amber-500 text-black font-semibold rounded-lg hover:bg-amber-400">Guardar</button>
+              <input placeholder="Nombre del servicio *" value={data.nombre} onChange={e => setData({...data, nombre: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+              <div className="grid grid-cols-2 gap-3">
+                <input placeholder="Precio *" value={data.precio} onChange={e => setData({...data, precio: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+                <input placeholder="Duración (min) *" value={data.duracion} onChange={e => setData({...data, duracion: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+              </div>
+              <textarea placeholder="Descripción" value={data.descripcion} onChange={e => setData({...data, descripcion: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors resize-none" rows={2} />
+              <button onClick={guardar} className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-amber-500/20">Guardar</button>
             </div>
           </div>
         </div>
@@ -650,6 +732,15 @@ function AdminGaleria({ cortes, cargar }: { cortes: Corte[]; cargar: () => void 
     setModal(true);
   };
 
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setData({...data, imagenUrl: reader.result as string});
+      reader.readAsDataURL(file);
+    }
+  };
+
   const guardar = async () => {
     await fetch(edit ? `/api/cortes/${edit.id}` : '/api/cortes', { method: edit ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
     setModal(false); cargar();
@@ -659,22 +750,23 @@ function AdminGaleria({ cortes, cargar }: { cortes: Corte[]; cargar: () => void 
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Galería</h2>
-        <button onClick={() => abrir()} className="px-4 py-2 bg-amber-500 text-black font-medium rounded-lg hover:bg-amber-400 flex items-center gap-2">
-          <Plus className="w-4 h-4" /> Nueva
+        <button onClick={() => abrir()} className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-medium rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 flex items-center gap-2 transition-all">
+          <Plus className="w-4 h-4" /> Nueva Imagen
         </button>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {cortes.map(c => (
-          <div key={c.id} className={`bg-neutral-900 rounded-xl overflow-hidden border ${c.activo ? 'border-neutral-800' : 'border-neutral-800 opacity-50'}`}>
-            <div className="aspect-square bg-neutral-800 flex items-center justify-center">
-              {c.imagenUrl ? <img src={c.imagenUrl} className="w-full h-full object-cover" /> : <ImageIcon className="w-10 h-10 text-neutral-600" />}
+          <div key={c.id} className={`bg-neutral-900/50 rounded-xl overflow-hidden border ${c.activo ? 'border-neutral-800 hover:border-neutral-700' : 'border-neutral-800 opacity-50'} transition-all`}>
+            <div className="aspect-square bg-neutral-800 relative">
+              {c.imagenUrl ? <img src={c.imagenUrl} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-10 h-10 text-neutral-700" /></div>}
+              {!c.activo && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><span className="text-xs text-neutral-400">Inactivo</span></div>}
             </div>
             <div className="p-3">
               <p className="text-sm font-medium truncate mb-2">{c.titulo}</p>
               <div className="flex gap-1">
-                <button onClick={() => abrir(c)} className="flex-1 py-1.5 bg-neutral-800 rounded text-xs hover:bg-neutral-700">Editar</button>
-                <button onClick={async () => { await fetch(`/api/cortes/${c.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ activo: !c.activo }) }); cargar(); }} className={`px-2 py-1.5 rounded text-xs ${c.activo ? 'bg-green-600/20 text-green-500' : 'bg-red-600/20 text-red-500'}`}>
+                <button onClick={() => abrir(c)} className="flex-1 py-2 bg-neutral-800 rounded-lg text-xs hover:bg-neutral-700 transition-colors">Editar</button>
+                <button onClick={async () => { await fetch(`/api/cortes/${c.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ activo: !c.activo }) }); cargar(); }} className={`px-3 py-2 rounded-lg text-xs transition-colors ${c.activo ? 'bg-green-600/20 text-green-500' : 'bg-red-600/20 text-red-500'}`}>
                   {c.activo ? 'On' : 'Off'}
                 </button>
               </div>
@@ -684,16 +776,29 @@ function AdminGaleria({ cortes, cargar }: { cortes: Corte[]; cargar: () => void 
       </div>
 
       {modal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6">
-          <div className="w-full max-w-md bg-neutral-900 rounded-xl p-6 border border-neutral-800">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+          <div className="w-full max-w-md bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold">{edit ? 'Editar' : 'Nueva'} Imagen</h3>
               <button onClick={() => setModal(false)} className="text-neutral-500 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4">
-              <input placeholder="Título *" value={data.titulo} onChange={e => setData({...data, titulo: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-              <textarea placeholder="Descripción" value={data.descripcion} onChange={e => setData({...data, descripcion: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none resize-none" rows={2} />
-              <button onClick={guardar} className="w-full py-3 bg-amber-500 text-black font-semibold rounded-lg hover:bg-amber-400">Guardar</button>
+              {/* Upload de imagen */}
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+                  {data.imagenUrl ? <img src={data.imagenUrl} className="w-full h-full object-cover" /> : <ImageIcon className="w-8 h-8 text-neutral-600" />}
+                </div>
+                <label className="flex-1 cursor-pointer">
+                  <div className="py-4 px-5 border-2 border-dashed border-neutral-700 rounded-xl text-center hover:border-amber-500/50 transition-colors">
+                    <Upload className="w-5 h-5 mx-auto mb-2 text-neutral-500" />
+                    <span className="text-sm text-neutral-400">Subir imagen</span>
+                  </div>
+                  <input type="file" accept="image/*" onChange={handleImage} className="hidden" />
+                </label>
+              </div>
+              <input placeholder="Título *" value={data.titulo} onChange={e => setData({...data, titulo: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+              <textarea placeholder="Descripción" value={data.descripcion} onChange={e => setData({...data, descripcion: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors resize-none" rows={2} />
+              <button onClick={guardar} className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-amber-500/20">Guardar</button>
             </div>
           </div>
         </div>
@@ -727,6 +832,15 @@ function AdminConfig({ config, cargar }: { config: Configuracion | null; cargar:
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const handleLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setData({...data, logoUrl: reader.result as string});
+      reader.readAsDataURL(file);
+    }
+  };
+
   const guardar = async () => {
     setSaving(true);
     try {
@@ -744,26 +858,44 @@ function AdminConfig({ config, cargar }: { config: Configuracion | null; cargar:
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Negocio */}
-        <div className="bg-neutral-900 rounded-xl p-6 border border-neutral-800 space-y-4">
-          <h3 className="font-semibold text-amber-500">Información</h3>
-          <input placeholder="Nombre del negocio" value={data.nombreNegocio} onChange={e => setData({...data, nombreNegocio: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-          <input placeholder="Lema" value={data.lema} onChange={e => setData({...data, lema: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
+        <div className="bg-neutral-900/50 rounded-2xl p-6 border border-neutral-800 space-y-5">
+          <h3 className="font-semibold text-amber-500 flex items-center gap-2">
+            <Scissors className="w-5 h-5" /> Información del Negocio
+          </h3>
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+              {data.logoUrl ? <img src={data.logoUrl} className="w-full h-full object-contain" /> : <Scissors className="w-6 h-6 text-neutral-600" />}
+            </div>
+            <label className="flex-1 cursor-pointer">
+              <div className="py-3 px-4 border-2 border-dashed border-neutral-700 rounded-xl text-center hover:border-amber-500/50 transition-colors">
+                <Upload className="w-4 h-4 mx-auto mb-1 text-neutral-500" />
+                <span className="text-xs text-neutral-400">Cambiar logo</span>
+              </div>
+              <input type="file" accept="image/*" onChange={handleLogo} className="hidden" />
+            </label>
+          </div>
+          <input placeholder="Nombre del negocio" value={data.nombreNegocio} onChange={e => setData({...data, nombreNegocio: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+          <input placeholder="Lema / Eslogan" value={data.lema} onChange={e => setData({...data, lema: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
         </div>
 
         {/* Contacto */}
-        <div className="bg-neutral-900 rounded-xl p-6 border border-neutral-800 space-y-4">
-          <h3 className="font-semibold text-amber-500">Contacto</h3>
+        <div className="bg-neutral-900/50 rounded-2xl p-6 border border-neutral-800 space-y-5">
+          <h3 className="font-semibold text-amber-500 flex items-center gap-2">
+            <Phone className="w-5 h-5" /> Contacto
+          </h3>
           <div className="grid grid-cols-2 gap-3">
-            <input placeholder="Teléfono" value={data.telefono} onChange={e => setData({...data, telefono: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none text-sm" />
-            <input placeholder="WhatsApp" value={data.whatsapp} onChange={e => setData({...data, whatsapp: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none text-sm" />
+            <input placeholder="Teléfono" value={data.telefono} onChange={e => setData({...data, telefono: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors text-sm" />
+            <input placeholder="WhatsApp" value={data.whatsapp} onChange={e => setData({...data, whatsapp: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors text-sm" />
           </div>
-          <input placeholder="Email" value={data.email} onChange={e => setData({...data, email: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-          <input placeholder="Dirección" value={data.direccion} onChange={e => setData({...data, direccion: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
+          <input placeholder="Email" value={data.email} onChange={e => setData({...data, email: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+          <input placeholder="Dirección" value={data.direccion} onChange={e => setData({...data, direccion: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
         </div>
 
         {/* Horarios */}
-        <div className="bg-neutral-900 rounded-xl p-6 border border-neutral-800 space-y-4">
-          <h3 className="font-semibold text-amber-500">Horarios</h3>
+        <div className="bg-neutral-900/50 rounded-2xl p-6 border border-neutral-800 space-y-5">
+          <h3 className="font-semibold text-amber-500 flex items-center gap-2">
+            <Clock className="w-5 h-5" /> Horarios
+          </h3>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: 'Lunes', key: 'horarioLunes' },
@@ -776,24 +908,26 @@ function AdminConfig({ config, cargar }: { config: Configuracion | null; cargar:
             ].map(h => (
               <div key={h.key}>
                 <label className="text-xs text-neutral-500">{h.label}</label>
-                <input value={data[h.key as keyof typeof data] as string} onChange={e => setData({...data, [h.key]: e.target.value})} className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none text-sm mt-1" />
+                <input value={data[h.key as keyof typeof data] as string} onChange={e => setData({...data, [h.key]: e.target.value})} className="w-full px-3 py-2.5 bg-neutral-800/50 border border-neutral-700 rounded-lg focus:border-amber-500/50 outline-none transition-colors text-sm mt-1" />
               </div>
             ))}
           </div>
         </div>
 
         {/* Redes */}
-        <div className="bg-neutral-900 rounded-xl p-6 border border-neutral-800 space-y-4">
-          <h3 className="font-semibold text-amber-500">Redes Sociales</h3>
-          <input placeholder="Instagram" value={data.instagram} onChange={e => setData({...data, instagram: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-          <input placeholder="Facebook" value={data.facebook} onChange={e => setData({...data, facebook: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none" />
-          <textarea placeholder="Mensaje WhatsApp" value={data.mensajeWhatsapp} onChange={e => setData({...data, mensajeWhatsapp: e.target.value})} className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:border-amber-500 outline-none resize-none" rows={2} />
+        <div className="bg-neutral-900/50 rounded-2xl p-6 border border-neutral-800 space-y-5">
+          <h3 className="font-semibold text-amber-500 flex items-center gap-2">
+            <Instagram className="w-5 h-5" /> Redes Sociales
+          </h3>
+          <input placeholder="Instagram (@usuario o URL)" value={data.instagram} onChange={e => setData({...data, instagram: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+          <input placeholder="Facebook (URL)" value={data.facebook} onChange={e => setData({...data, facebook: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+          <textarea placeholder="Mensaje predefinido de WhatsApp" value={data.mensajeWhatsapp} onChange={e => setData({...data, mensajeWhatsapp: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors resize-none" rows={2} />
         </div>
       </div>
 
       {/* BOTÓN GUARDAR */}
       <div className="mt-8 flex justify-end">
-        <button onClick={guardar} disabled={saving} className={`px-8 py-4 font-semibold rounded-lg flex items-center gap-2 text-lg ${saved ? 'bg-green-600 text-white' : 'bg-amber-500 text-black hover:bg-amber-400'} disabled:opacity-50`}>
+        <button onClick={guardar} disabled={saving} className={`px-10 py-4 font-semibold rounded-xl flex items-center gap-2 text-lg shadow-lg transition-all ${saved ? 'bg-green-600 text-white shadow-green-600/20' : 'bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-amber-500/20 hover:shadow-amber-500/30 hover:-translate-y-0.5'} disabled:opacity-50 disabled:hover:translate-y-0`}>
           {saving ? (
             <><div className="w-5 h-5 border-2 border-current/30 border-t-transparent rounded-full animate-spin" /> Guardando...</>
           ) : saved ? (
