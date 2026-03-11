@@ -630,6 +630,7 @@ function AdminServicios({ servicios, cargar }: { servicios: Servicio[]; cargar: 
   const [modal, setModal] = useState(false);
   const [edit, setEdit] = useState<Servicio | null>(null);
   const [data, setData] = useState({ nombre: '', precio: '', duracion: '', descripcion: '', imagenUrl: '' });
+  const [uploading, setUploading] = useState(false);
 
   const abrir = (s?: Servicio) => {
     if (s) { setEdit(s); setData({ nombre: s.nombre, precio: String(s.precio), duracion: String(s.duracion), descripcion: s.descripcion || '', imagenUrl: s.imagenUrl || '' }); }
@@ -637,16 +638,33 @@ function AdminServicios({ servicios, cargar }: { servicios: Servicio[]; cargar: 
     setModal(true);
   };
 
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+    
+    setUploading(true);
+    try {
+      // Convertir a base64 para guardar
       const reader = new FileReader();
-      reader.onload = () => setData({...data, imagenUrl: reader.result as string});
+      reader.onload = () => {
+        setData({...data, imagenUrl: reader.result as string});
+        setUploading(false);
+      };
+      reader.onerror = () => {
+        alert('Error al leer la imagen');
+        setUploading(false);
+      };
       reader.readAsDataURL(file);
+    } catch {
+      setUploading(false);
     }
   };
 
   const guardar = async () => {
+    if (!data.nombre || !data.precio || !data.duracion) {
+      alert('Completa los campos obligatorios');
+      return;
+    }
     await fetch(edit ? `/api/servicios/${edit.id}` : '/api/servicios', { method: edit ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...data, precio: Number(data.precio), duracion: Number(data.duracion) }) });
     setModal(false); cargar();
   };
@@ -692,26 +710,37 @@ function AdminServicios({ servicios, cargar }: { servicios: Servicio[]; cargar: 
               <button onClick={() => setModal(false)} className="text-neutral-500 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4">
-              {/* Upload de imagen */}
+              {/* Preview de imagen */}
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+                <div className="w-20 h-20 bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0 border border-neutral-700">
                   {data.imagenUrl ? <img src={data.imagenUrl} className="w-full h-full object-cover" /> : <ImageIcon className="w-8 h-8 text-neutral-600" />}
                 </div>
                 <label className="flex-1 cursor-pointer">
-                  <div className="py-4 px-5 border-2 border-dashed border-neutral-700 rounded-xl text-center hover:border-amber-500/50 transition-colors">
-                    <Upload className="w-5 h-5 mx-auto mb-2 text-neutral-500" />
-                    <span className="text-sm text-neutral-400">Subir imagen</span>
+                  <div className={`py-3 px-4 border-2 border-dashed border-neutral-700 rounded-xl text-center hover:border-amber-500/50 transition-colors ${uploading ? 'opacity-50' : ''}`}>
+                    <Upload className="w-5 h-5 mx-auto mb-1 text-neutral-500" />
+                    <span className="text-xs text-neutral-400">{uploading ? 'Subiendo...' : 'Subir archivo'}</span>
                   </div>
-                  <input type="file" accept="image/*" onChange={handleImage} className="hidden" />
+                  <input type="file" accept="image/*" onChange={handleImage} className="hidden" disabled={uploading} />
                 </label>
               </div>
+              
+              {/* Campo URL de imagen */}
+              <div className="relative">
+                <input placeholder="O pega aquí la URL de la imagen" value={data.imagenUrl} onChange={e => setData({...data, imagenUrl: e.target.value})} className="w-full px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors text-sm pr-10" />
+                {data.imagenUrl && (
+                  <button type="button" onClick={() => setData({...data, imagenUrl: ''})} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-red-400">
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+              
               <input placeholder="Nombre del servicio *" value={data.nombre} onChange={e => setData({...data, nombre: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
               <div className="grid grid-cols-2 gap-3">
-                <input placeholder="Precio *" value={data.precio} onChange={e => setData({...data, precio: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
-                <input placeholder="Duración (min) *" value={data.duracion} onChange={e => setData({...data, duracion: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+                <input placeholder="Precio *" type="number" value={data.precio} onChange={e => setData({...data, precio: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
+                <input placeholder="Duración (min) *" type="number" value={data.duracion} onChange={e => setData({...data, duracion: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
               </div>
               <textarea placeholder="Descripción" value={data.descripcion} onChange={e => setData({...data, descripcion: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors resize-none" rows={2} />
-              <button onClick={guardar} className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-amber-500/20">Guardar</button>
+              <button onClick={guardar} className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all">Guardar</button>
             </div>
           </div>
         </div>
@@ -783,22 +812,33 @@ function AdminGaleria({ cortes, cargar }: { cortes: Corte[]; cargar: () => void 
               <button onClick={() => setModal(false)} className="text-neutral-500 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4">
-              {/* Upload de imagen */}
+              {/* Preview de imagen */}
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+                <div className="w-20 h-20 bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0 border border-neutral-700">
                   {data.imagenUrl ? <img src={data.imagenUrl} className="w-full h-full object-cover" /> : <ImageIcon className="w-8 h-8 text-neutral-600" />}
                 </div>
                 <label className="flex-1 cursor-pointer">
-                  <div className="py-4 px-5 border-2 border-dashed border-neutral-700 rounded-xl text-center hover:border-amber-500/50 transition-colors">
-                    <Upload className="w-5 h-5 mx-auto mb-2 text-neutral-500" />
-                    <span className="text-sm text-neutral-400">Subir imagen</span>
+                  <div className="py-3 px-4 border-2 border-dashed border-neutral-700 rounded-xl text-center hover:border-amber-500/50 transition-colors">
+                    <Upload className="w-5 h-5 mx-auto mb-1 text-neutral-500" />
+                    <span className="text-xs text-neutral-400">Subir archivo</span>
                   </div>
                   <input type="file" accept="image/*" onChange={handleImage} className="hidden" />
                 </label>
               </div>
+              
+              {/* Campo URL de imagen */}
+              <div className="relative">
+                <input placeholder="O pega aquí la URL de la imagen" value={data.imagenUrl} onChange={e => setData({...data, imagenUrl: e.target.value})} className="w-full px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors text-sm pr-10" />
+                {data.imagenUrl && (
+                  <button type="button" onClick={() => setData({...data, imagenUrl: ''})} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-red-400">
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+              
               <input placeholder="Título *" value={data.titulo} onChange={e => setData({...data, titulo: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors" />
               <textarea placeholder="Descripción" value={data.descripcion} onChange={e => setData({...data, descripcion: e.target.value})} className="w-full px-4 py-3.5 bg-neutral-800/50 border border-neutral-700 rounded-xl focus:border-amber-500/50 outline-none transition-colors resize-none" rows={2} />
-              <button onClick={guardar} className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-amber-500/20">Guardar</button>
+              <button onClick={guardar} className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all">Guardar</button>
             </div>
           </div>
         </div>
