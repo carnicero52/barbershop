@@ -1148,3 +1148,4 @@ function AdminConfig({ config, cargar }: { config: Configuracion | null; cargar:
     </div>
   );
 }
+// Actualizado: Wed Mar 11 03:47:58 UTC 2026
